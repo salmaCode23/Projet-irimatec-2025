@@ -1,0 +1,26 @@
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+
+function App() {
+  const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    // ← C'est ici que le frontend envoie la requête
+    axios.get('http://127.0.0.1:8000/api/test')
+      .then(response => {
+        setMessage(response.data.message); // reçoit la réponse
+      })
+      .catch(error => {
+        console.error('Erreur API:', error);
+      });
+  }, []);
+
+  return (
+    <div>
+      <h1>Test Frontend → Backend</h1>
+      <p>{message}</p>
+    </div>
+  );
+}
+
+export default App;

@@ -1,0 +1,23 @@
+[
+{
+
+    "title" :"GESTION DE L'EAU",
+    "description": " Solutions de pompage, stockage et énergie solaire pour acheminer et sécuriser l’approvisionnement en eau.",
+    "image":"/bassin.png",
+    "end":"/service"
+
+},
+{
+
+    "title" :"TRAITEMENT DE L’EAU",
+    "description": "Systèmes de filtration et fertigation pour garantir une eau propre et nutritive adaptée aux cultures.",
+    "image":"/arrosage.png"
+},
+{
+
+    "title" :"IRRIGATION",
+    "description": " Technologies d’aspersion et de goutte-à-goutte pour une distribution efficace et économe de l’eau au champ.",
+    "image":"/gouteAgoute.png"
+}   
+
+]
