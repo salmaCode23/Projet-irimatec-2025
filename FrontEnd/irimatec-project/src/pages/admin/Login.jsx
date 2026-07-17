@@ -20,7 +20,7 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      const response = await axios.post("http://127.0.0.1:8000/api/login", form);
+      const response = await axios.post("http://127.0.0.1:3000/api/login", form);
 
       // Stocker token
       localStorage.setItem("token", response.data.token);

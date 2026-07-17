@@ -12,7 +12,7 @@ const Dashboard = () => {
   // Charger les projets depuis Laravel
   const fetchProjects = async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:8000/api/projets");
+      const response = await axios.get("http://127.0.0.1:3000/api/projets");
       setProjects(response.data);
     } catch (error) {
       console.error("Erreur chargement projets:", error);

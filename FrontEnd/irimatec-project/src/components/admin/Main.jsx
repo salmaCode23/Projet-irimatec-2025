@@ -28,7 +28,7 @@ const Main = () => {
   const fetchProjects = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("http://127.0.0.1:8000/api/projets");
+      const response = await axios.get("http://127.0.0.1:3000/api/projets");
       setContent(response.data);
     } catch (error) {
       console.error("Erreur lors du chargement:", error);
@@ -42,16 +42,26 @@ const Main = () => {
   }, []);
 
   // Supprimer un projet
-  const handleDelete = async (id) => {
-    if (window.confirm("Êtes-vous sûr de vouloir supprimer ce projet ?")) {
-      try {
-        await axios.delete(`http://127.0.0.1:8000/api/projets/${id}`);
-        setContent((prev) => prev.filter((item) => item.id !== id));
-      } catch (error) {
-        console.error("Erreur suppression:", error);
-      }
+const handleDelete = async (id) => {
+  if (window.confirm("Êtes-vous sûr de vouloir supprimer ce projet ?")) {
+    try {
+      const token = localStorage.getItem("token");
+
+      await axios.delete(
+        `http://127.0.0.1:3000/api/projets/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setContent((prev) => prev.filter((item) => item.id !== id));
+    } catch (error) {
+      console.error("Erreur suppression:", error);
     }
-  };
+  }
+};
 
   // Ouvrir modal ajout
   const openAddModal = () => {
@@ -108,42 +118,63 @@ const Main = () => {
   };
 
   // Ajouter ou modifier projet
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    try {
-      const data = new FormData();
-      data.append("title", formData.title);
-      data.append("description", formData.description);
-      data.append("location", formData.location);
-      data.append("status", formData.status);
-      if (formData.image) {
-        data.append("image", formData.image);
-      }
+  try {
+    const token = localStorage.getItem("token");
 
-      if (modalMode === "add") {
-        // POST pour ajouter
-        await axios.post("http://127.0.0.1:8000/api/projets", data, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-      } else {
-        // PUT pour modifier
-        await axios.post(
-          `http://127.0.0.1:8000/api/projets/${editingItem.id}?_method=PUT`,
-          data,
-          { headers: { "Content-Type": "multipart/form-data" } }
-        );
-      }
+    const data = new FormData();
+    data.append("title", formData.title);
+    data.append("description", formData.description);
+    data.append("location", formData.location);
+    data.append("status", formData.status);
 
-      fetchProjects();
-      closeModal();
-    } catch (error) {
-      console.error(
-        "Erreur lors de la soumission:",
-        error.response?.data || error.message
+    if (formData.image) {
+      data.append("image", formData.image);
+    }
+
+    if (modalMode === "add") {
+      // Ajouter un projet
+      await axios.post(
+        "http://127.0.0.1:3000/api/projets",
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+    } else {
+      // Modifier un projet
+      await axios.put(
+        `http://127.0.0.1:3000/api/projets/${editingItem.id}`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
     }
-  };
+
+    fetchProjects();
+    closeModal();
+
+  } catch (error) {
+
+  if (error.response) {
+    alert(error.response.data.message || "Une erreur est survenue.");
+  } else {
+    alert("Impossible de contacter le serveur.");
+  }
+
+  console.error(error);
+
+}
+};
 
   return (
     <div>
@@ -172,11 +203,13 @@ const Main = () => {
               >
                 <div className="relative">
                   {item.image ? (
-                    <img
-                      src={`http://127.0.0.1:8000/storage/${item.image}`}
-                      alt={item.title}
-                      className="w-full h-48 object-cover rounded-t-xl"
-                    />
+                   <img
+  src={`http://localhost:3000/uploads/${item.image}`}
+  alt={item.title}
+  className="w-full h-48 object-cover rounded-t-xl"
+  onError={() => console.log("Erreur image")}
+  onLoad={() => console.log("Image OK")}
+/>
                   ) : (
                     <div className="w-full h-48 bg-gray-200 rounded-t-xl"></div>
                   )}

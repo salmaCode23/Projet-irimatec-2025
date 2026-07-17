@@ -25,7 +25,7 @@ function Contact() {
    
 
   try {
-    await axios.post("http://127.0.0.1:8000/api/contact", form);
+    await axios.post("http://127.0.0.1:3000/api/contact", form);
     setStatus("Message envoyé avec succès !");
     setShowAlert(true);
 
